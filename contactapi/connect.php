@@ -18,7 +18,7 @@
 
         mysqli_set_charset($connect, "utf8");
 
-        return $connect
+        return $connect;
     }
 
     $con = connect();
