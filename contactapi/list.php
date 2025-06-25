@@ -1,5 +1,5 @@
 <?php
-    require 'connect.php'
+    require 'connect.php';
 
     $contacts = [];
     $sql = "SELECT contactID, firstName, lastName, emailAddress, phone, status, dob, imageName, typeID FROM contacts";
