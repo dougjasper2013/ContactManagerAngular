@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
-import { Contact } from './contact/contact';
+
 import { About } from './about/about';
+import { Contacts } from './contacts/contacts';
 
 export const routes: Routes = [
-    { path: "contact", component: Contact},
+    { path: "contacts", component: Contacts},
     { path: "about", component: About},
-    { path: "**", redirectTo: "/contact"}
+    { path: "**", redirectTo: "/contacts"}
 ];
