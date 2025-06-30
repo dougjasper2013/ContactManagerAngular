@@ -15,7 +15,7 @@
   
         <div class="col-2">
           <input type="text"
-            [(ngModel)]="contacts[i].firstName"
+            [(ngModel)]="item.firstName"
             class="form-control"
             required
             #firstName="ngModel"
@@ -24,7 +24,7 @@
   
         <div class="col-2">
           <input type="text"
-            [(ngModel)]="contacts[i].lastName"
+            [(ngModel)]="item.lastName"
             class="form-control"
             required
             #lastName="ngModel"
@@ -33,7 +33,7 @@
   
         <div class="col-2">
           <input type="text"
-            [(ngModel)]="contacts[i].emailAddress"
+            [(ngModel)]="item.emailAddress"
             class="form-control"
             required
             #emailAddress="ngModel"
@@ -42,7 +42,7 @@
   
         <div class="col-2">
           <input type="text"
-            [(ngModel)]="contacts[i].phone"
+            [(ngModel)]="item.phone"
             class="form-control"
             required
             #phone="ngModel"
@@ -50,7 +50,8 @@
         </div>      
   
         <div class="col-2">        
-            <img src="http://localhost/contactapiam/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
+            <img src="http://localhost/contactmanagerangular/
+            contactapi/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
         </div>
   
         <!--<div class="col-2">
