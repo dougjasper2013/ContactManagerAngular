@@ -164,18 +164,18 @@
             <img src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
         </div>
   
-        <!--<div class="col-2">
+        <div class="col-2">
           <input type="button"
             value="Edit"
             class="btn btn-success btn-sm"
             [disabled]="firstName.invalid || lastName.invalid || emailAddress.invalid || phone.invalid"
-            (click)="editContact(firstName, lastName, emailAddress, phone, item.contactID)">
+            (click)="editContact(item.firstName, item.lastName, item.emailAddress, item.phone, item.status, item.dob, item.imageName, item.typeID, item.contactID)">
   
           <input type="button"
             value="Delete"
             class="btn btn-danger btn-sm"
             (click)="deleteContact(item.contactID? item.contactID:0)">
-        </div>-->
+        </div>
   
       </div>
     </div>

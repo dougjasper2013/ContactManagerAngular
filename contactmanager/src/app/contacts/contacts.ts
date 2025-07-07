@@ -63,6 +63,16 @@ export class Contacts implements OnInit {
     );
   }
 
+  editContact(firstName: any, lastName: any, emailAddress: any, phone: any, status: any, dob: any, imageName: any, typeID: any, contactID: any)
+  {
+
+  }
+
+  deleteContact(contactID: number)
+  {
+    
+  }
+
   uploadFile(): void {
     if (!this.selectedFile)
     {
