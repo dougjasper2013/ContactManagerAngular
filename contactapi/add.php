@@ -33,7 +33,7 @@
         // Store the data
         $sql = "INSERT INTO `contacts`(`contactID`,`firstName`,`lastName`, `emailAddress`, `phone`, `status`, `dob`, `imageName`) VALUES (null,'{$firstName}','{$lastName}','{$emailAddress}','{$phone}','{$status}','{$dob}', '{$new}')";
 
-        if(mysqliquery($con, $sql))
+        if(mysqli_query($con, $sql))
         {
             http_response_code(201);
 
