@@ -5,11 +5,12 @@ import { Contact } from '../contact';
 import { ContactService } from '../contact.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-contacts',
-  imports: [HttpClientModule, CommonModule, FormsModule],
+  imports: [HttpClientModule, CommonModule, FormsModule, RouterModule],
   providers: [ContactService],
   templateUrl: './contacts.html',
   styleUrls: ['./contacts.css'],  
