@@ -68,10 +68,16 @@ export class Contacts implements OnInit {
     this.resetAlerts();
 
     console.log(firstName.value);
+    console.log(lastName.value);
+    console.log(emailAddress.value);
+    console.log(phone.value);
+    console.log(+contactID);
+    
 
     this.contactService.edit({firstName: firstName.value, lastName: lastName.value, emailAddress: emailAddress.value, phone: phone.value, contactID: +contactID})
       .subscribe(
         (res) => {
+          this.cdr.detectChanges(); // <--- force UI update
           this.success = 'Successfully edited';
         },
         (err) => (
@@ -90,6 +96,7 @@ export class Contacts implements OnInit {
           this.contacts = this.contacts.filter( function (item) {
             return item['contactID'] && +item['contactID'] !== +contactID;
           });
+          this.cdr.detectChanges(); // <--- force UI update
           this.success = "Deleted successfully";
         },
           (err) => (

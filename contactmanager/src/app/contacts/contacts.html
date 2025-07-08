@@ -169,7 +169,7 @@
             value="Edit"
             class="btn btn-success btn-sm"
             [disabled]="firstName.invalid || lastName.invalid || emailAddress.invalid || phone.invalid"
-            (click)="editContact(item.firstName, item.lastName, item.emailAddress, item.phone, item.contactID)">
+            (click)="editContact(firstName, lastName, emailAddress, phone, item.contactID)">
   
           <input type="button"
             value="Delete"
