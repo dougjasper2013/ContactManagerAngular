@@ -48,20 +48,26 @@ export class Contacts implements OnInit {
   }
 
   addContact(f: NgForm) {
-    this.resetAlerts();
+  this.resetAlerts();
 
+  if (this.selectedFile) {
+    this.contact.imageName = this.selectedFile.name;
     this.uploadFile();
-
-    this.contactService.add(this.contact).subscribe(
-      (res: Contact) => {
-        this.contacts.push(res);
-        this.success = 'Successfully created';
-
-        f.reset();
-      },
-      (err) =>  (this.error = err.message)
-    );
+  } else {
+    this.contact.imageName = ''; // Let backend handle default placeholder
   }
+
+  this.contactService.add(this.contact).subscribe(
+    (res: Contact) => {
+      this.contacts.push(res);
+      this.success = 'Successfully created';
+      f.reset();
+      this.selectedFile = null; // Clear file selection
+    },
+    (err) => (this.error = err.message)
+  );
+}
+
 
   editContact(firstName: any, lastName: any, emailAddress: any, phone: any, contactID: any)
   {
