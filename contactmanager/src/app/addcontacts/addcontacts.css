@@ -12,17 +12,6 @@
     border-radius: 4px;
     display: inline;
 }
-
 .form-group > label {
     width: 10%;
-}
-
-.col-2 > input[type="button"] {
-    width: 30%;
-    margin-left: 10px;
-}
-
-#links > button {    
-    width: 20%;
-    margin-left: 10px;
 }
