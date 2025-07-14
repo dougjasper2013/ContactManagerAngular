@@ -36,9 +36,21 @@
     </div>
 
     <div class="form-group">
-        <label>Upload New Image</label>
-        <input type="file" name="imageName" class="form-control" (change)="onFileSelected($event)">
-    </div>
+  <label>Current or New Image Preview</label><br>
+  <img
+    [src]="previewUrl ? previewUrl : 'http://localhost/contactmanagerangular/contactapi/uploads/' + contact.imageName"
+    alt="Contact Image"
+    width="100"
+    height="100"
+    class="mb-3 border rounded"
+  />
+</div>
+
+<div class="form-group">
+  <label>Upload New Image</label>
+  <input type="file" name="image" class="form-control" (change)="onFileSelected($event)">
+</div>
+
 
     <button type="submit" class="btn btn-primary" [disabled]="f.invalid">Update</button>
     <button class="btn btn-secondary" routerLink="/contacts">Cancel</button>
