@@ -1,0 +1,19 @@
+/* Style for the container */
+.container {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 600px;
+  margin: 40px auto;
+  background-color: #f9f9f9;
+}
+
+/* Space between form groups */
+.form-group {
+  margin-bottom: 16px;
+}
+
+/* Button spacing */
+button {
+  margin-right: 10px;
+}
