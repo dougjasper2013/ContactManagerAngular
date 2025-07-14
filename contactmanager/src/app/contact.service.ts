@@ -25,6 +25,11 @@ export class ContactService {
         );
     }
 
+    get(contactID: number) {
+        return this.http.get<Contact>(`http://localhost/contactmanagerangular/contactapi/view.php?contactID=${contactID}`);
+    }
+
+
     add(contact: Contact) {
         return this.http.post(`${this.baseUrl}/add`, {data: contact}).pipe(
             map((res: any) => {
