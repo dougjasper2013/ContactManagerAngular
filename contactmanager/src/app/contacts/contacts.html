@@ -115,67 +115,20 @@
     <div>
       <div *ngFor="let item of contacts;let i = index;" class="row">
   
-        <!-- <div class="col-2">
-          <input type="text"
-            [(ngModel)]="contacts[i].contactID"
-            class="form-control"
-            required
-            #contactID="ngModel"
-            [ngClass]="{ 'is-invalid': contactID.touched && contactID.invalid }">
-        </div> -->
-  
+        <!-- Example of read-only row -->
+        <div class="col-2">{{ item.firstName }}</div>
+        <div class="col-2">{{ item.lastName }}</div>
+        <div class="col-2">{{ item.emailAddress }}</div>
+        <div class="col-2">{{ item.phone }}</div>
         <div class="col-2">
-          <input type="text"
-            [(ngModel)]="item.firstName"
-            class="form-control"
-            required
-            #firstName="ngModel"
-            [ngClass]="{ 'is-invalid': firstName.touched && firstName.invalid }">
+          <img src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
         </div>
-  
+
         <div class="col-2">
-          <input type="text"
-            [(ngModel)]="item.lastName"
-            class="form-control"
-            required
-            #lastName="ngModel"
-            [ngClass]="{ 'is-invalid': lastName.touched && lastName.invalid }">
+          <button class="btn btn-success btn-sm" [routerLink]="['/edit', item.contactID]">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteContact(item.contactID ? item.contactID : 0)">Delete</button>
         </div>
-  
-        <div class="col-2">
-          <input type="text"
-            [(ngModel)]="item.emailAddress"
-            class="form-control"
-            required
-            #emailAddress="ngModel"
-            [ngClass]="{ 'is-invalid': emailAddress.touched && emailAddress.invalid }">
-        </div>
-  
-        <div class="col-2">
-          <input type="text"
-            [(ngModel)]="item.phone"
-            class="form-control"
-            required
-            #phone="ngModel"
-            [ngClass]="{ 'is-invalid': phone.touched && phone.invalid }">
-        </div>      
-  
-        <div class="col-2">        
-            <img src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
-        </div>
-  
-        <div class="col-2">
-          <input type="button"
-            value="Edit"
-            class="btn btn-success btn-sm"
-            [disabled]="firstName.invalid || lastName.invalid || emailAddress.invalid || phone.invalid"
-            (click)="editContact(firstName, lastName, emailAddress, phone, item.contactID)">
-  
-          <input type="button"
-            value="Delete"
-            class="btn btn-danger btn-sm"
-            (click)="deleteContact(item.contactID? item.contactID:0)">
-        </div>
+
   
       </div>
     </div>
