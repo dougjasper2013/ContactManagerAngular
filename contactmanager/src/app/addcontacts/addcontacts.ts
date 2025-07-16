@@ -22,31 +22,31 @@ export class Addcontacts {
 
   constructor(private contactService: ContactService, private http: HttpClient, private router: Router, private cdr: ChangeDetectorRef) {}
 
-  addContact(f: NgForm) {
-  this.resetAlerts();
+    addContact(f: NgForm) {
+      this.resetAlerts();
 
-  if (!this.contact.imageName) {
-    this.contact.imageName = 'placeholder_100.jpg';
-  }
-
-  this.contactService.add(this.contact).subscribe(
-    (res: Contact) => {
-      this.success = 'Successfully created';
-
-      // Only upload file AFTER successful contact creation
-      if (this.selectedFile && this.contact.imageName !== 'placeholder_100.jpg') {
-        this.uploadFile();
+      if (!this.contact.imageName) {
+        this.contact.imageName = 'placeholder_100.jpg';
       }
 
-      f.reset();
-      this.router.navigate(['/contacts']);
-    },
-    (err) => {
-      this.error = err.error?.message || err.message || 'Error occurred';
-      this.cdr.detectChanges();
+      this.contactService.add(this.contact).subscribe(
+        (res: Contact) => {
+          this.success = 'Successfully created';
+
+          // Only upload file AFTER successful contact creation
+          if (this.selectedFile && this.contact.imageName !== 'placeholder_100.jpg') {
+            this.uploadFile();
+          }
+
+          f.reset();
+          this.router.navigate(['/contacts']);
+        },
+        (err) => {
+          this.error = err.error?.message || err.message || 'Error occurred';
+          this.cdr.detectChanges();
+        }
+      );
     }
-  );
-}
 
 
   uploadFile(): void {

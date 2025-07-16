@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { NgForm, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Contact } from '../contact';
@@ -40,7 +40,7 @@ export class Updatecontacts implements OnInit {
     this.contactService.get(this.contactID).subscribe({
       next: (data: Contact) => {
         this.contact = data;
-        this.originalImageName = data.imageName ?? '';
+        this.originalImageName = data.imageName || '';
         this.previewUrl = `http://localhost/contactmanagerangular/contactapi/uploads/${this.originalImageName}`;
         this.cdr.detectChanges();
       },
@@ -52,6 +52,7 @@ export class Updatecontacts implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
+      this.contact.imageName = this.selectedFile.name;
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -67,18 +68,17 @@ export class Updatecontacts implements OnInit {
 
     const formData = new FormData();
     formData.append('contactID', this.contactID.toString());
-    formData.append('firstName', this.contact.firstName ?? '');
-    formData.append('lastName', this.contact.lastName ?? '');
-    formData.append('emailAddress', this.contact.emailAddress ?? '');
-    formData.append('phone', this.contact.phone ?? '');
-    formData.append('status', this.contact.status ?? '');
-    formData.append('dob', this.contact.dob ?? '');
-    formData.append('originalImageName', this.originalImageName);
+    formData.append('firstName', this.contact.firstName || '');
+    formData.append('lastName', this.contact.lastName || '');
+    formData.append('emailAddress', this.contact.emailAddress || '');
+    formData.append('phone', this.contact.phone || '');
+    formData.append('status', this.contact.status || '');
+    formData.append('dob', this.contact.dob || '');
+    formData.append('imageName', this.contact.imageName || '');
+    formData.append('oldImageName', this.originalImageName);
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
-    } else {
-      formData.append('imageName', this.contact.imageName ?? '');
     }
 
     this.http.post('http://localhost/contactmanagerangular/contactapi/edit.php', formData).subscribe({
@@ -86,7 +86,16 @@ export class Updatecontacts implements OnInit {
         this.success = 'Contact updated successfully';
         this.router.navigate(['/contacts']);
       },
-      error: () => this.error = 'Update failed'
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 409) {
+          const body = err.error;
+          this.error = body?.error || 'Duplicate entry detected';
+          this.cdr.detectChanges();
+        } else {
+          this.error = 'Update failed';
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 }

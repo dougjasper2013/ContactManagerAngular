@@ -1,78 +1,83 @@
 <?php
 require 'connect.php';
+header('Content-Type: application/json');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// Sanitize and validate inputs
-$contactID = isset($_POST['contactID']) ? (int)$_POST['contactID'] : 0;
-$firstName = trim($_POST['firstName'] ?? '');
-$lastName = trim($_POST['lastName'] ?? '');
-$emailAddress = trim($_POST['emailAddress'] ?? '');
-$phone = trim($_POST['phone'] ?? '');
-$status = trim($_POST['status'] ?? '');
-$dob = trim($_POST['dob'] ?? '');
-$originalImageName = $_POST['originalImageName'] ?? '';
+// Parse form data
+$contactID = isset($_POST['contactID']) ? (int) $_POST['contactID'] : 0;
+$firstName = mysqli_real_escape_string($con, $_POST['firstName'] ?? '');
+$lastName = mysqli_real_escape_string($con, $_POST['lastName'] ?? '');
+$emailAddress = mysqli_real_escape_string($con, $_POST['emailAddress'] ?? '');
+$phone = mysqli_real_escape_string($con, $_POST['phone'] ?? '');
+$status = mysqli_real_escape_string($con, $_POST['status'] ?? '');
+$dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
+$originalImageName = mysqli_real_escape_string($con, $_POST['originalImageName'] ?? '');
+$imageName = $originalImageName;
 
 // Validation
-if (
-    $contactID < 1 || $firstName === '' || $lastName === '' ||
-    $emailAddress === '' || $phone === ''
-) {
+if ($contactID < 1 || $firstName === '' || $lastName === '' || $emailAddress === '' || $phone === '' || $status === '' || $dob === '') {
     http_response_code(400);
+    echo json_encode(['error' => 'Missing required fields.']);
     exit;
 }
 
-// Sanitize for DB
-$contactID = mysqli_real_escape_string($con, $contactID);
-$firstName = mysqli_real_escape_string($con, $firstName);
-$lastName = mysqli_real_escape_string($con, $lastName);
-$emailAddress = mysqli_real_escape_string($con, $emailAddress);
-$phone = mysqli_real_escape_string($con, $phone);
-$status = mysqli_real_escape_string($con, $status);
-$dob = mysqli_real_escape_string($con, $dob);
+// Check for duplicate email (excluding current contact)
+$emailCheckQuery = "SELECT contactID FROM contacts WHERE emailAddress = '$emailAddress' AND contactID != $contactID LIMIT 1";
+$emailCheckResult = mysqli_query($con, $emailCheckQuery);
+if ($emailCheckResult && mysqli_num_rows($emailCheckResult) > 0) {
+    http_response_code(409);
+    echo json_encode(['error' => 'Email address already exists.']);
+    exit;
+}
 
-$imageName = $originalImageName;
-
-// Check if a new image is uploaded
+// Check for duplicate imageName (excluding placeholder and same contact)
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $fileTmpPath = $_FILES['image']['tmp_name'];
-    $fileName = $_FILES['image']['name'];
-    $uploadFileDir = './uploads/';
-    $dest_path = $uploadFileDir . $fileName;
+    $uploadDir = 'uploads/';
+    $newImageName = basename($_FILES['image']['name']);
 
-    if (move_uploaded_file($fileTmpPath, $dest_path)) {
-        $imageName = $fileName;
-
-        // Delete old image if not placeholder
-        if ($originalImageName !== 'placeholder_100.jpg') {
-            $oldImagePath = $uploadFileDir . $originalImageName;
-            if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
-            }
+    if ($newImageName !== 'placeholder_100.jpg') {
+        $imageCheckQuery = "SELECT contactID FROM contacts WHERE imageName = '$newImageName' AND contactID != $contactID LIMIT 1";
+        $imageCheckResult = mysqli_query($con, $imageCheckQuery);
+        if ($imageCheckResult && mysqli_num_rows($imageCheckResult) > 0) {
+            http_response_code(409);
+            echo json_encode(['error' => 'Image name already exists.']);
+            exit;
         }
+    }
+
+    // Save new image
+    $targetFilePath = $uploadDir . $newImageName;
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFilePath)) {
+        // Delete old image if not placeholder
+        if (!empty($originalImageName) && $originalImageName !== 'placeholder_100.jpg' && file_exists($uploadDir . $originalImageName)) {
+            unlink($uploadDir . $originalImageName);
+        }
+        $imageName = $newImageName;
     } else {
         http_response_code(500);
-        echo json_encode(['error' => 'Failed to move uploaded file.']);
+        echo json_encode(['error' => 'Failed to upload image.']);
         exit;
     }
 }
 
-// Update the contact
-$imageName = mysqli_real_escape_string($con, $imageName);
-
-$sql = "UPDATE `contacts` SET 
-          `firstName` = '$firstName',
-          `lastName` = '$lastName',
-          `emailAddress` = '$emailAddress',
-          `phone` = '$phone',
-          `status` = '$status',
-          `dob` = '$dob',
-          `imageName` = '$imageName'
-        WHERE `contactID` = '$contactID'
+// Update contact
+$sql = "UPDATE contacts SET 
+            firstName = '$firstName',
+            lastName = '$lastName',
+            emailAddress = '$emailAddress',
+            phone = '$phone',
+            status = '$status',
+            dob = '$dob',
+            imageName = '$imageName'
+        WHERE contactID = $contactID
         LIMIT 1";
 
 if (mysqli_query($con, $sql)) {
     http_response_code(200);
-    echo json_encode(['message' => 'Contact updated']);
+    echo json_encode(['message' => 'Contact updated successfully']);
 } else {
-    http_response_code(422);
+    http_response_code(500);
     echo json_encode(['error' => 'Database update failed']);
 }
+?>
