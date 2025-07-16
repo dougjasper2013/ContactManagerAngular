@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -20,26 +20,34 @@ export class Addcontacts {
   error = '';
   success = '';
 
-  constructor(private contactService: ContactService, private http: HttpClient, private router: Router) {}
+  constructor(private contactService: ContactService, private http: HttpClient, private router: Router, private cdr: ChangeDetectorRef) {}
 
   addContact(f: NgForm) {
-    this.resetAlerts();
+  this.resetAlerts();
 
-    if (!this.contact.imageName) {
-      this.contact.imageName = 'placeholder_100.jpg';
-    }
-
-    this.uploadFile();
-
-    this.contactService.add(this.contact).subscribe(
-      (res: Contact) => {
-        this.success = 'Successfully created';
-        f.reset();
-        this.router.navigate(['/contacts']); // redirect back
-      },
-      (err) => this.error = err.message
-    );
+  if (!this.contact.imageName) {
+    this.contact.imageName = 'placeholder_100.jpg';
   }
+
+  this.contactService.add(this.contact).subscribe(
+    (res: Contact) => {
+      this.success = 'Successfully created';
+
+      // Only upload file AFTER successful contact creation
+      if (this.selectedFile && this.contact.imageName !== 'placeholder_100.jpg') {
+        this.uploadFile();
+      }
+
+      f.reset();
+      this.router.navigate(['/contacts']);
+    },
+    (err) => {
+      this.error = err.error?.message || err.message || 'Error occurred';
+      this.cdr.detectChanges();
+    }
+  );
+}
+
 
   uploadFile(): void {
     if (!this.selectedFile) return;
@@ -57,7 +65,7 @@ export class Addcontacts {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
-      this.contact.imageName = this.selectedFile.name;
+      this.contact.imageName = this.selectedFile.name;      
     }
   }
 
