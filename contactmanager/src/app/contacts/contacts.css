@@ -1,28 +1,53 @@
-#theForm, #theList, #links {
-    padding: 10px;
-    border: 2px solid black;
-    margin: 10px;
+.contact-list-container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.form-group > input[type="text"], input[type="email"], input[type="date"], input[type="file"] {
-    width: 30%;
-    padding: 10px;
-    margin: 5px 0 20px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: inline;
+.contact-list-container h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #333;
 }
 
-.form-group > label {
-    width: 10%;
+/* Each contact row styled like a card */
+.contact-card {
+  background: #f9f9f9;
+  padding: 16px 8px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: background 0.3s ease;
 }
 
-.col-2 > input[type="button"] {
-    width: 30%;
-    margin-left: 10px;
+.contact-card:hover {
+  background: #f1f1f1;
 }
 
-#links > button {    
-    width: 20%;
-    margin-left: 10px;
+.contact-field {
+  font-size: 15px;
+  color: #444;
+}
+
+.contact-image {
+  width: 80px;
+  height: 80px;
+  object-fit: fill;
+  border-radius: 20%;
+  border: 2px solid #ccc;
+}
+
+/* Adjust spacing between action buttons */
+.contact-card .btn {
+  min-width: 70px;
+}
+
+/* Link button spacing */
+#links button {
+  margin: 0 8px;
 }

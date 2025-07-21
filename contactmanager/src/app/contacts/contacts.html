@@ -109,39 +109,26 @@
 </div>-->
 
 
-<div id="theList">
-    <h2>Contact List</h2>    
+<div id="theList" class="contact-list-container">
+  <h2>Contact List</h2>    
 
-    <div>
-      <div *ngFor="let item of contacts;let i = index;" class="row">
-  
-        <!-- Example of read-only row -->
-        <div class="col-2">{{ item.firstName }}</div>
-        <div class="col-2">{{ item.lastName }}</div>
-        <div class="col-2">{{ item.emailAddress }}</div>
-        <div class="col-2">{{ item.phone }}</div>
-        <div class="col-2">
-          <img src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
-        </div>
-
-        <div class="col-2">
-          <button class="btn btn-success btn-sm" [routerLink]="['/edit', item.contactID]">Edit</button>
-          <button class="btn btn-danger btn-sm" (click)="deleteContact(item.contactID ? item.contactID : 0)">Delete</button>
-        </div>
-
-  
-      </div>
+  <div *ngFor="let item of contacts; let i = index;" class="contact-card row align-items-center">
+    <div class="col-2 contact-field">{{ item.firstName }}</div>
+    <div class="col-2 contact-field">{{ item.lastName }}</div>
+    <div class="col-2 contact-field">{{ item.emailAddress }}</div>
+    <div class="col-2 contact-field">{{ item.phone }}</div>
+    <div class="col-2">
+      <img class="contact-image" src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" alt="{{item.imageName}}" />
     </div>
-
-
+    <div class="col-2 d-flex gap-2">
+      <button class="btn btn-success btn-sm" [routerLink]="['/edit', item.contactID]">Edit</button>
+      <button class="btn btn-danger btn-sm" (click)="deleteContact(item.contactID ?? 0)">Delete</button>
+    </div>
+  </div>
 </div>
 
-<div id="links">
-  <button class="btn btn-sm btn-primary" routerLink="/add">
-    Add Contact
-  </button>
-  <button class="btn btn-sm btn-primary" routerLink="/about">
-    About Us
-  </button>
+<div id="links" class="mt-4 text-center">
+  <button class="btn btn-sm btn-primary me-2" routerLink="/add">Add Contact</button>
+  <button class="btn btn-sm btn-primary" routerLink="/about">About Us</button>
 </div>
 

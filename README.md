@@ -23,7 +23,7 @@ Test updating the image with an invalid file type. *** Done ** Allows updating w
  
 Test deleting a contact. *** Done *** Successfully deleted contact and removed image.
  
-Test that Contact list displays correctly. *** Done *** List displays correctly but could maybe use some more polished CSS.  *** Action Item: Add additional CSS. ***
+Test that Contact list displays correctly. *** Done *** List displays correctly but could maybe use some more polished CSS.  *** Action Item: Add additional CSS. *** *** Done, added CSS to give a card like appearance with Bootstrap styles. ***
  
 Test that Contact list updates appropriately when adding contact. *** Done *** List updates appropriately.
  
@@ -43,7 +43,7 @@ Break time until 10AM.
  
 Test maximum allowed characters for fields. *** Done *** Generated Error Code 500 at line 34 in addcontacts.ts no record was added to the database. Likely need to check character length before attempting add. *** Action Item: Resolve identified issues. ***
  
-Test when adding a new contact if we select one image then select a different image and then click Add Contact. *** Done *** Image and record are not added until clicking on Add Contact. *** Action Item: Add ability to select contact type. ***
+Test when adding a new contact if we select one image then select a different image and then click Add Contact. *** Done *** Image and record are not added until clicking on Add Contact. *** Action Item: Add ability to select contact type. *** *** Now allows selecting a contact type from a dropdown list when adding a new contact. An additional Action Item would be to now add the ability to edit the contact type. ***
  
 Test when adding a contact what happens when filling in the form and selecting an image file and then clicking on Cancel. *** Done *** No record is added, no image is added to uploads. Behavior is as expected.
  

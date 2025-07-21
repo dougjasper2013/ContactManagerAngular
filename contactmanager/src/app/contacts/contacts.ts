@@ -53,6 +53,7 @@ export class Contacts implements OnInit {
   if (this.selectedFile) {
     this.contact.imageName = this.selectedFile.name;
     this.uploadFile();
+    this.cdr.detectChanges();
   } else {
     this.contact.imageName = ''; // Let backend handle default placeholder
   }
@@ -66,6 +67,7 @@ export class Contacts implements OnInit {
     },
     (err) => (this.error = err.message)
   );
+  this.cdr.detectChanges();
 }
 
 
@@ -122,6 +124,7 @@ export class Contacts implements OnInit {
       response => console.log('File uploaded successfully:', response),
       error => console.error('File upload failed:', error)
     );
+
   }
 
   onFileSelected(event: Event): void

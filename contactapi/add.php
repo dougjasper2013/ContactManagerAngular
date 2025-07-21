@@ -23,6 +23,8 @@ if (isset($postdata) && !empty($postdata)) {
     $status = mysqli_real_escape_string($con, trim($request->data->status));
     $dob = mysqli_real_escape_string($con, trim($request->data->dob));
     $imageName = mysqli_real_escape_string($con, trim($request->data->imageName));
+    $typeID = mysqli_real_escape_string($con, trim($request->data->typeID));
+
 
     $origimg = str_replace('\\', '/', $imageName);
     $new = basename($origimg);
@@ -51,8 +53,8 @@ if (isset($postdata) && !empty($postdata)) {
     }
 
     // Insert into DB
-    $sql = "INSERT INTO `contacts`(`contactID`,`firstName`,`lastName`, `emailAddress`, `phone`, `status`, `dob`, `imageName`) 
-            VALUES (null,'{$firstName}','{$lastName}','{$emailAddress}','{$phone}','{$status}','{$dob}', '{$new}')";
+    $sql = "INSERT INTO `contacts`(`contactID`,`firstName`,`lastName`, `emailAddress`, `phone`, `status`, `dob`, `imageName`, `typeID`) 
+            VALUES (null,'{$firstName}','{$lastName}','{$emailAddress}','{$phone}','{$status}','{$dob}', '{$new}', '{$typeID}')";
 
     if (mysqli_query($con, $sql)) {
         http_response_code(201);
@@ -64,6 +66,7 @@ if (isset($postdata) && !empty($postdata)) {
             'status' => $status,
             'dob' => $dob,
             'imageName' => $new,
+            'typeID' => $typeID,
             'contactID' => mysqli_insert_id($con)
         ];
         echo json_encode(['data' => $contact]);
