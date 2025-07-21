@@ -29,6 +29,7 @@ export class Contacts implements OnInit {
 
   ngOnInit(): void {
     this.getContacts();
+    this.cdr.detectChanges();
   }
 
   getContacts(): void {

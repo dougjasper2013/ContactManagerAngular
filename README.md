@@ -5,7 +5,7 @@ Test adding a contact with valid data. *** Done ***
  
 Test adding a contact with empty data. *** Done *** No record added, simply stays on the Add Contact Page
  
-Test adding a duplicate contact. *** Done *** duplicate of contact was added. Image was not duplicated in the uploads folder on the backend which is good. Adding the duplicate will need to be corrected. When deleting the duplicate contact the image was deleted from the uploads folder. *** Action Item: do not allow duplicate emails and do not allow duplicate images. We also want to prevent duplicate emails and images when we update a contact. *** Testing suggested changes reveals that a duplicate email and a non duplicate imageName results in no contact added which is great but it uploads image which itshould not. Further suggestion to not upload immediately resulted in desired behavior for Add Contact. After suggested changes to prevent the use of either a duplicate email address or a duplicate image during the update process it works as expected. There is an issue with the Cancel which is identified elsewhere as an Action Item and will be addressed when tending to this later Actipn Item.
+Test adding a duplicate contact. *** Done *** duplicate of contact was added. Image was not duplicated in the uploads folder on the backend which is good. Adding the duplicate will need to be corrected. When deleting the duplicate contact the image was deleted from the uploads folder. *** Action Item: do not allow duplicate emails and do not allow duplicate images. We also want to prevent duplicate emails and images when we update a contact. *** Testing suggested changes reveals that a duplicate email and a non duplicate imageName results in no contact added which is great but it uploads image which itshould not. Further suggestion to not upload immediately resulted in desired behavior for Add Contact. After suggested changes to prevent the use of either a duplicate email address or a duplicate image during the update process it works as expected. There is an issue with the Cancel which is identified elsewhere as an Action Item and will be addressed when tending to this later Action Item.
  
 Test adding an invalid file format for the image. *** Done *** Added new contact and invalid file which ultimately leads to an issue with the img tag in the contact list. File is added to uploads folder and imageName column in database.
  
@@ -15,7 +15,7 @@ Test updating with valid data. *** Done *** Updated successfully.
  
 Test updating with empty data.*** Done *** Update and Cancel buttons disabled if any field is empty.
  
-Test updating with invalid data.  *** Done *** Allows birthdate in the future.  Allows invalid phone and invalid email formats.  *** Action Item: resolve identified issues. ***
+Test updating with invalid data.  *** Done *** Allows birthdate in the future.  Allows invalid phone and invalid email formats.  *** Action Item: resolve identified issues. *** *** Resolved birthdate in the future. *** *** Action Item: still need to resolve Invalid phone and email formats. *** *** Resolved Email and Phone formats for both Add and Update Forms. ***
  
 Test adding contact with non-numeric phone number
  

@@ -23,6 +23,7 @@ export class Updatecontacts implements OnInit {
 
   success = '';
   error = '';
+  maxDate: string = '';
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   originalImageName: string = '';
@@ -36,6 +37,11 @@ export class Updatecontacts implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    this.maxDate = `${yyyy}-${mm}-${dd}`;
     this.contactID = +this.route.snapshot.paramMap.get('id')!;
     this.contactService.get(this.contactID).subscribe({
       next: (data: Contact) => {
@@ -64,6 +70,20 @@ export class Updatecontacts implements OnInit {
   }
 
   updateContact(form: NgForm) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.contact.emailAddress??'')) {
+        this.error = 'Please enter a valid email address.';
+        this.cdr.detectChanges();
+        return;
+      }
+
+    const phoneRegex = /^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$/;
+      if (!phoneRegex.test(this.contact.phone??'')) {
+        this.error = 'Please enter a valid phone number.';
+        this.cdr.detectChanges();
+        return;
+      }
+
     if (form.invalid) return;
 
     const formData = new FormData();
