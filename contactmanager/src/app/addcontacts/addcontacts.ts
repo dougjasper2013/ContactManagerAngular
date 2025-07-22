@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Contact } from '../contact';
 import { ContactService } from '../contact.service';
 import { RouterModule, Router } from '@angular/router';
+import { Auth } from '../services/auth';
 
 @Component({
   standalone: true,
@@ -24,11 +25,13 @@ export class Addcontacts implements OnInit {
   selectedFile: File | null = null;
   error = '';
   success = '';
+  userName = '';
   maxDate: string = '';
   types: { typeID: number, contactType: string }[] = [];
 
   constructor(
     private contactService: ContactService,
+    public authService: Auth,
     private http: HttpClient,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -40,7 +43,8 @@ export class Addcontacts implements OnInit {
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
-    this.maxDate = `${yyyy}-${mm}-${dd}`;    
+    this.maxDate = `${yyyy}-${mm}-${dd}`;
+    this.userName = localStorage.getItem('username') || 'Guest';
   }
 
   loadTypes(): void {

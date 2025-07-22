@@ -14,7 +14,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 
 export class Register {
-  username = '';
+  userName = '';
   password = '';
   emailAddress = '';
   errorMessage = '';
@@ -24,7 +24,7 @@ export class Register {
 
   register() {
     this.auth.register({
-      username: this.username,
+      userName: this.userName,
       password: this.password,
       emailAddress: this.emailAddress
     }).subscribe({

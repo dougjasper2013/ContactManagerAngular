@@ -6,6 +6,7 @@ import { ContactService } from '../contact.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Auth } from '../services/auth';
 
 @Component({
   standalone: true,
@@ -22,13 +23,15 @@ export class Contacts implements OnInit {
 
   error = '';
   success = '';
+  userName = '';
 
   selectedFile: File | null = null;
 
-  constructor(private contactService: ContactService, private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private contactService: ContactService, public authService: Auth, private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.getContacts();
+    this.userName = localStorage.getItem('username') || 'Guest';
     this.cdr.detectChanges();
   }
 

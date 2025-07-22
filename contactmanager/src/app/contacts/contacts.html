@@ -110,7 +110,10 @@
 
 
 <div id="theList" class="contact-list-container">
-  <h2>Contact List</h2>    
+  <div class="toolbar">
+    <h2>{{ userName }}'s Contact List</h2>
+    <button (click)="authService.logout()" class="btn btn-sm btn-danger">Logout</button>
+  </div>    
 
   <div *ngFor="let item of contacts; let i = index;" class="contact-card row align-items-center">
     <div class="col-2 contact-field">{{ item.firstName }}</div>

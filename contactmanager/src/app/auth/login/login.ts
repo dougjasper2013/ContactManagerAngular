@@ -14,17 +14,18 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 
 export class Login {
-  username = '';
+  userName = '';
   password = '';
   errorMessage = '';
 
   constructor(private auth: Auth, private router: Router) {}
 
   login() {
-    this.auth.login({ username: this.username, password: this.password }).subscribe({
+    this.auth.login({ userName: this.userName, password: this.password }).subscribe({
       next: res => {
         if (res.success) {
           this.auth.setAuth(true);
+          localStorage.setItem('username', this.userName);
           this.router.navigate(['/contacts']);
         } else {
           this.errorMessage = res.message;

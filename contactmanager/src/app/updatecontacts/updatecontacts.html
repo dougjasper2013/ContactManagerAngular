@@ -1,5 +1,8 @@
 <div class="container">
-  <h2>Edit Contact</h2>
+  <div class="toolbar">
+    <h2>{{ userName }}'s UpdateContact</h2>
+    <button (click)="authService.logout()" class="btn btn-sm btn-danger">Logout</button>
+  </div>
   <form #f="ngForm" (ngSubmit)="updateContact(f)">
 
     <div class="form-group">
