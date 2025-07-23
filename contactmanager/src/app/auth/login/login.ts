@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ export class Login {
   password = '';
   errorMessage = '';
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
   login() {
     this.auth.login({ userName: this.userName, password: this.password }).subscribe({
@@ -27,8 +27,10 @@ export class Login {
           this.auth.setAuth(true);
           localStorage.setItem('username', this.userName);
           this.router.navigate(['/contacts']);
+          this.cdr.detectChanges();
         } else {
           this.errorMessage = res.message;
+          this.cdr.detectChanges();
         }
       },
       error: () => this.errorMessage = 'Server error during login.'
