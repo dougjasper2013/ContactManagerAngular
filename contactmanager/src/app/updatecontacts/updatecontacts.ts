@@ -73,6 +73,11 @@ export class Updatecontacts implements OnInit {
     }
   }
 
+  cancel() {
+    this.router.navigate(['/contacts']);
+  }
+
+
   updateContact(form: NgForm) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(this.contact.emailAddress??'')) {

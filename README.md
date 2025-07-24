@@ -31,7 +31,7 @@ Test that Contact list updates appropriately when updating a contact. *** Done *
  
 Test maximum allowed characters for fields
  
-If we go to the Update Form and change data including the image and then click on the Cancel Button does the cancel execute without a change to the contact including the image not changed or deleted image added in the uploads folder. *** Done *** After making changes including the image when we click on Cancel the record updates when it shouldn't and the new image is added to the uploads folder and the original is deleted despite clicking on Cancel. *** Action Item: resolve identified issues. ***
+If we go to the Update Form and change data including the image and then click on the Cancel Button does the cancel execute without a change to the contact including the image not changed or deleted image added in the uploads folder. *** Done *** After making changes including the image when we click on Cancel the record updates when it shouldn't and the new image is added to the uploads folder and the original is deleted despite clicking on Cancel. *** Action Item: resolve identified issues. *** *** Item almost resolved. When we cancel everything is as we want. However we did notice that when we do update the image, the previous image is not deleted from the uploads folder and it should be. ***
  
 https://chatgpt.com/share/6862ad4e-acb0-8007-a667-3a3c6b1805a3
 ChatGPT - Component Naming Guide

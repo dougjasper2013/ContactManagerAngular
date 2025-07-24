@@ -16,7 +16,11 @@ $originalImageName = mysqli_real_escape_string($con, $_POST['originalImageName']
 $imageName = $originalImageName;
 
 // Validation
-if ($contactID < 1 || $firstName === '' || $lastName === '' || $emailAddress === '' || $phone === '' || $status === '' || $dob === '') {
+if (
+    $contactID < 1 ||
+    $firstName === '' || $lastName === '' || $emailAddress === '' ||
+    $phone === '' || $status === '' || $dob === ''
+) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing required fields.']);
     exit;
@@ -31,11 +35,12 @@ if ($emailCheckResult && mysqli_num_rows($emailCheckResult) > 0) {
     exit;
 }
 
-// Check for duplicate imageName (excluding placeholder and same contact)
+// Handle new image upload if provided
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = 'uploads/';
     $newImageName = basename($_FILES['image']['name']);
 
+    // Check for duplicate image name (excluding placeholder)
     if ($newImageName !== 'placeholder_100.jpg') {
         $imageCheckQuery = "SELECT contactID FROM contacts WHERE imageName = '$newImageName' AND contactID != $contactID LIMIT 1";
         $imageCheckResult = mysqli_query($con, $imageCheckQuery);
@@ -49,10 +54,19 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     // Save new image
     $targetFilePath = $uploadDir . $newImageName;
     if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFilePath)) {
-        // Delete old image if not placeholder
-        if (!empty($originalImageName) && $originalImageName !== 'placeholder_100.jpg' && file_exists($uploadDir . $originalImageName)) {
-            unlink($uploadDir . $originalImageName);
+        // Delete old image (if not placeholder and different from new)
+        if (
+            !empty($originalImageName) &&
+            $originalImageName !== 'placeholder_100.jpg' &&
+            $originalImageName !== $newImageName
+        ) {
+            $oldFilePath = $uploadDir . $originalImageName;
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath);
+            }
         }
+
+        // Set new image name
         $imageName = $newImageName;
     } else {
         http_response_code(500);
