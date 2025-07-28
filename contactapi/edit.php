@@ -35,10 +35,24 @@ if ($emailCheckResult && mysqli_num_rows($emailCheckResult) > 0) {
     exit;
 }
 
+// Allowed file extensions and MIME types
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+$allowedMimeTypes  = ['image/jpeg', 'image/png', 'image/gif'];
+
 // Handle new image upload if provided
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = 'uploads/';
-    $newImageName = basename($_FILES['image']['name']);
+    $fileTmp   = $_FILES['image']['tmp_name'];
+    $fileName  = basename($_FILES['image']['name']);
+    $fileExt   = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileType  = mime_content_type($fileTmp);
+
+    // ✅ Validate extension and MIME type
+    if (!in_array($fileExt, $allowedExtensions) || !in_array($fileType, $allowedMimeTypes)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid image format. Only JPG, PNG, and GIF are allowed.']);
+        exit;
+    }
 
     // Check for duplicate image name (excluding placeholder)
     if ($newImageName !== 'placeholder_100.jpg') {

@@ -1,34 +1,36 @@
 <?php
-    session_start();
+header('Content-Type: application/json');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-    header('Content-Type: application/json');
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+$uploadDir = 'uploads/';
 
-    require 'connect.php';
+// Check if file was uploaded
+if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+    http_response_code(400);
+    echo json_encode(['error' => 'No file uploaded or upload error occurred.']);
+    exit;
+}
 
-    // Handle image upload
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK)
-    {
-        $uploadDir = 'uploads/';
-        $originalFileName = basename($_FILES['image']['name']);
+// Validate file type (allow only JPG, PNG, GIF)
+$allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+$fileTmpPath = $_FILES['image']['tmp_name'];
+$fileName = basename($_FILES['image']['name']);
+$fileType = mime_content_type($fileTmpPath);
 
-        // Generate a new file name with "Main"
-        $newFileName = $originalFileName;
-        $targetFilePath = $uploadDir . $newFileName;
+if (!in_array($fileType, $allowedMimeTypes)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid image format. Only JPG, PNG, and GIF are allowed.']);
+    exit;
+}
 
-        // Save the new image to the uploads directory
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFilePath))
-        {
-            // no code required
-        }
-        else
-        {
-            http_response_code(500);
-            echo json_encode(['message' => 'Failed to upload image']);
-        }
-
-        exit; // Exit after handling image
-    }
+// Move file to uploads folder
+$targetFilePath = $uploadDir . $fileName;
+if (move_uploaded_file($fileTmpPath, $targetFilePath)) {
+    http_response_code(200);
+    echo json_encode(['message' => 'File uploaded successfully', 'fileName' => $fileName]);
+} else {
+    http_response_code(500);
+    echo json_encode(['error' => 'Failed to move uploaded file.']);
+}
 ?>

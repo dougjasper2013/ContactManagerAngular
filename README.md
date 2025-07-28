@@ -19,7 +19,7 @@ Test updating with invalid data.  *** Done *** Allows birthdate in the future.  
  
 Test adding contact with non-numeric phone number
  
-Test updating the image with an invalid file type. *** Done ** Allows updating with invalid file format.  *** Action Item: Do not allow invalid file types. ***
+Test updating the image with an invalid file type. *** Done ** Allows updating with invalid file format.  *** Action Item: Do not allow invalid file types. *** *** Item resolved for both Update and Add. ***
  
 Test deleting a contact. *** Done *** Successfully deleted contact and removed image.
  
