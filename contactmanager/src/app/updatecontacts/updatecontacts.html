@@ -7,22 +7,35 @@
 
     <div class="form-group">
       <label>First Name</label>
-      <input type="text" name="firstName" class="form-control" [(ngModel)]="contact.firstName" required>
+      <input type="text" name="firstName" class="form-control" [(ngModel)]="contact.firstName" required maxlength="50">
+      <div *ngIf="f.controls['firstName']?.errors?.['maxlength'] && f.controls['firstName']?.touched" class="alert alert-danger">
+        First Name cannot exceed 50 characters.
+      </div>
     </div>
 
     <div class="form-group">
       <label>Last Name</label>
-      <input type="text" name="lastName" class="form-control" [(ngModel)]="contact.lastName" required>
+      <input type="text" name="lastName" class="form-control" [(ngModel)]="contact.lastName" required maxlength="50">
+      <div *ngIf="f.controls['lastName']?.errors?.['maxlength'] && f.controls['lastName']?.touched" class="alert alert-danger">
+        Last Name cannot exceed 50 characters.
+      </div>
     </div>
 
     <div class="form-group">
       <label>Email Address</label>
-      <input type="email" name="emailAddress" [(ngModel)]="contact.emailAddress" class="form-control" required email />
+      <input type="email" name="emailAddress" [(ngModel)]="contact.emailAddress" class="form-control" required maxlength="100">
+      <div *ngIf="f.controls['emailAddress']?.errors?.['maxlength'] && f.controls['emailAddress']?.touched" class="alert alert-danger">
+        Email cannot exceed 100 characters.
+      </div>
     </div>
 
     <div class="form-group">
       <label>Phone</label>
-      <input type="tel" name="phone" [(ngModel)]="contact.phone" class="form-control" required pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" />
+      <input type="tel" name="phone" [(ngModel)]="contact.phone" class="form-control" required maxlength="15"
+             pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" />
+      <div *ngIf="f.controls['phone']?.errors?.['maxlength'] && f.controls['phone']?.touched" class="alert alert-danger">
+        Phone cannot exceed 15 characters.
+      </div>
     </div>
 
     <div class="form-group">
@@ -33,33 +46,32 @@
       </select>
     </div>
 
+    <!-- ✅ Contact Type Dropdown -->
     <div class="form-group">
-      <label>Date of Birth</label>
-      <input type="date" name="dob" [(ngModel)]="contact.dob" class="form-control" [max]="maxDate" required />
-
+      <label>Contact Type</label>
+      <select name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
+        <option *ngFor="let t of types" [value]="t.typeID">{{ t.contactType }}</option>
+      </select>
     </div>
 
     <div class="form-group">
-  <label>Current or New Image Preview</label><br>
-  <img
-    [src]="previewUrl ? previewUrl : 'http://localhost/contactmanagerangular/contactapi/uploads/' + contact.imageName"
-    alt="Contact Image"
-    width="100"
-    height="100"
-    class="mb-3 border rounded"
-  />
-</div>
+      <label>Date of Birth</label>
+      <input type="date" name="dob" [(ngModel)]="contact.dob" class="form-control" [max]="maxDate" required />
+    </div>
 
-<div class="form-group">
-  <label>Upload New Image</label>
-  <input type="file" name="image" class="form-control" (change)="onFileSelected($event)">
-</div>
+    <div class="form-group">
+      <label>Current or New Image Preview</label><br>
+      <img [src]="previewUrl ? previewUrl : 'http://localhost/contactmanagerangular/contactapi/uploads/' + contact.imageName"
+           alt="Contact Image" width="100" height="100" class="mb-3 border rounded" />
+    </div>
 
+    <div class="form-group">
+      <label>Upload New Image</label>
+      <input type="file" name="image" class="form-control" (change)="onFileSelected($event)">
+    </div>
 
     <button type="submit" class="btn btn-primary" [disabled]="f.invalid">Update</button>
-    <!--<button class="btn btn-secondary" routerLink="/contacts">Cancel</button>-->
-    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
-
+    <button class="btn btn-secondary" routerLink="/contacts">Cancel</button>
 
     <div *ngIf="success" class="alert alert-success mt-3">{{ success }}</div>
     <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>

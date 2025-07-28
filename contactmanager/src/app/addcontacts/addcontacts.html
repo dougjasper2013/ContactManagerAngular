@@ -3,28 +3,50 @@
     <h2>{{ userName }}'s Add Contact</h2>
     <button (click)="authService.logout()" class="btn btn-sm btn-danger">Logout</button>
   </div>
+
   <form #f="ngForm" (ngSubmit)="addContact(f)">
-    
+
+    <!-- First Name -->
     <div class="form-group">
       <label>First Name</label>
-      <input type="text" name="firstName" class="form-control" [(ngModel)]="contact.firstName" required>
+      <input type="text" name="firstName" class="form-control" [(ngModel)]="contact.firstName"
+             required maxlength="50" #firstName="ngModel">
+      <div *ngIf="firstName.errors?.['maxlength'] && firstName.touched" class="alert alert-danger mt-1">
+        First name cannot exceed 50 characters.
+      </div>
     </div>
 
+    <!-- Last Name -->
     <div class="form-group">
       <label>Last Name</label>
-      <input type="text" name="lastName" class="form-control" [(ngModel)]="contact.lastName" required>
+      <input type="text" name="lastName" class="form-control" [(ngModel)]="contact.lastName"
+             required maxlength="50" #lastName="ngModel">
+      <div *ngIf="lastName.errors?.['maxlength'] && lastName.touched" class="alert alert-danger mt-1">
+        Last name cannot exceed 50 characters.
+      </div>
     </div>
 
+    <!-- Email -->
     <div class="form-group">
       <label>Email Address</label>
-      <input type="email" name="emailAddress" [(ngModel)]="contact.emailAddress" class="form-control" required email />
+      <input type="email" name="emailAddress" [(ngModel)]="contact.emailAddress" class="form-control"
+             required maxlength="100" #emailAddress="ngModel" email>
+      <div *ngIf="emailAddress.errors?.['maxlength'] && emailAddress.touched" class="alert alert-danger mt-1">
+        Email cannot exceed 100 characters.
+      </div>
     </div>
 
+    <!-- Phone -->
     <div class="form-group">
-      <label>Phone Number</label>
-      <input type="tel" name="phone" [(ngModel)]="contact.phone" class="form-control" required pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" />
+      <label>Phone</label>
+      <input type="tel" name="phone" [(ngModel)]="contact.phone" class="form-control"
+             required maxlength="15" pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" #phone="ngModel">
+      <div *ngIf="phone.errors?.['maxlength'] && phone.touched" class="alert alert-danger mt-1">
+        Phone number cannot exceed 15 characters.
+      </div>
     </div>
 
+    <!-- Status -->
     <div class="form-group">
       <label>Status</label>
       <select name="status" class="form-control" [(ngModel)]="contact.status" required>
@@ -33,36 +55,33 @@
       </select>
     </div>
 
+    <!-- DOB -->
     <div class="form-group">
       <label>Date of Birth</label>
-      <input type="date" name="dob" [(ngModel)]="contact.dob" class="form-control" [max]="maxDate" required />
+      <input type="date" name="dob" [(ngModel)]="contact.dob" class="form-control" [max]="maxDate" required>
     </div>
 
+    <!-- Contact Type Dropdown (Dynamic from DB) -->
     <div class="form-group">
-      <label>Upload Image</label>
-      <input type="file" class="form-control" name="image" (change)="onFileSelected($event)" />
-    </div>
-
-    <div class="form-group">
-      <label for="typeID">Contact Type</label>
-      <select id="typeID" name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
-        <option value="" disabled selected>Select a contact type</option>
-        <option *ngFor="let t of types" [value]="t.typeID">{{ t.contactType }}</option>
+      <label>Contact Type</label>
+      <select name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
+        <option [ngValue]="0" disabled>Select Type</option>
+        <option *ngFor="let t of types" [ngValue]="t.typeID">{{ t.contactType }}</option>
       </select>
     </div>
 
+    <!-- Upload Image -->
+    <div class="form-group">
+      <label>Upload Image</label>
+      <input type="file" name="imageName" class="form-control" (change)="onFileSelected($event)">
+    </div>
 
-    <button type="submit" class="btn btn-primary mr-2" [disabled]="f.invalid">Add Contact</button>
+    <!-- Buttons -->
+    <button type="submit" class="btn btn-primary" [disabled]="f.invalid">Add Contact</button>
     <button class="btn btn-secondary" routerLink="/contacts">Cancel</button>
 
+    <!-- Messages -->
     <div *ngIf="success" class="alert alert-success mt-3">{{ success }}</div>
     <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
-    
   </form>
-</div>
-
-<div id="links">
-  <button class="btn btn-sm btn-dark text-white" routerLink="/contacts">
-    Back to Contact Manager
-  </button>
 </div>

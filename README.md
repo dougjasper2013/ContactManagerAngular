@@ -41,7 +41,7 @@ Add capability to select TypeID when adding or updating contacts.
  
 Break time until 10AM.
  
-Test maximum allowed characters for fields. *** Done *** Generated Error Code 500 at line 34 in addcontacts.ts no record was added to the database. Likely need to check character length before attempting add. *** Action Item: Resolve identified issues. ***
+Test maximum allowed characters for fields. *** Done *** Generated Error Code 500 at line 34 in addcontacts.ts no record was added to the database. Likely need to check character length before attempting add. *** Action Item: Resolve identified issues. *** *** Item resolved with maxlength in html ***
  
 Test when adding a new contact if we select one image then select a different image and then click Add Contact. *** Done *** Image and record are not added until clicking on Add Contact. *** Action Item: Add ability to select contact type. *** *** Now allows selecting a contact type from a dropdown list when adding a new contact. An additional Action Item would be to now add the ability to edit the contact type. ***
  
