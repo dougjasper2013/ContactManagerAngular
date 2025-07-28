@@ -12,7 +12,7 @@ $emailAddress = mysqli_real_escape_string($con, $_POST['emailAddress'] ?? '');
 $phone = mysqli_real_escape_string($con, $_POST['phone'] ?? '');
 $status = mysqli_real_escape_string($con, $_POST['status'] ?? '');
 $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
-$originalImageName = mysqli_real_escape_string($con, $_POST['originalImageName'] ?? '');
+$originalImageName = mysqli_real_escape_string($con, $_POST['oldImageName'] ?? '');
 $imageName = $originalImageName;
 
 // Validation
