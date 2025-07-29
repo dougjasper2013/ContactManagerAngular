@@ -33,7 +33,11 @@ export class Login {
           this.cdr.detectChanges();
         }
       },
-      error: () => this.errorMessage = 'Server error during login.'
+      error: () => {
+        this.errorMessage = 'Server error during login.';
+        this.cdr.detectChanges();
+      }
+      
     });
   }
 }
