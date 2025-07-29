@@ -12,15 +12,12 @@ $emailAddress = mysqli_real_escape_string($con, $_POST['emailAddress'] ?? '');
 $phone = mysqli_real_escape_string($con, $_POST['phone'] ?? '');
 $status = mysqli_real_escape_string($con, $_POST['status'] ?? '');
 $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
-$originalImageName = mysqli_real_escape_string($con, $_POST['oldImageName'] ?? '');
+$typeID = isset($_POST['typeID']) ? (int) $_POST['typeID'] : 0;
+$originalImageName = mysqli_real_escape_string($con, $_POST['originalImageName'] ?? '');
 $imageName = $originalImageName;
 
 // Validation
-if (
-    $contactID < 1 ||
-    $firstName === '' || $lastName === '' || $emailAddress === '' ||
-    $phone === '' || $status === '' || $dob === ''
-) {
+if ($contactID < 1 || $firstName === '' || $lastName === '' || $emailAddress === '' || $phone === '' || $status === '' || $dob === '' || $typeID < 1) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing required fields.']);
     exit;
@@ -35,26 +32,20 @@ if ($emailCheckResult && mysqli_num_rows($emailCheckResult) > 0) {
     exit;
 }
 
-// Allowed file extensions and MIME types
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-$allowedMimeTypes  = ['image/jpeg', 'image/png', 'image/gif'];
-
-// Handle new image upload if provided
+// Handle image upload if a new one is provided
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = 'uploads/';
-    $fileTmp   = $_FILES['image']['tmp_name'];
-    $fileName  = basename($_FILES['image']['name']);
-    $fileExt   = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileType  = mime_content_type($fileTmp);
+    $newImageName = basename($_FILES['image']['name']);
 
-    // ✅ Validate extension and MIME type
-    if (!in_array($fileExt, $allowedExtensions) || !in_array($fileType, $allowedMimeTypes)) {
+    // Validate file type
+    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+    $ext = strtolower(pathinfo($newImageName, PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedTypes)) {
         http_response_code(400);
-        echo json_encode(['error' => 'Invalid image format. Only JPG, PNG, and GIF are allowed.']);
+        echo json_encode(['error' => 'Invalid image type. Allowed: jpg, jpeg, png, gif.']);
         exit;
     }
 
-    // Check for duplicate image name (excluding placeholder)
     if ($newImageName !== 'placeholder_100.jpg') {
         $imageCheckQuery = "SELECT contactID FROM contacts WHERE imageName = '$newImageName' AND contactID != $contactID LIMIT 1";
         $imageCheckResult = mysqli_query($con, $imageCheckQuery);
@@ -65,22 +56,11 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         }
     }
 
-    // Save new image
     $targetFilePath = $uploadDir . $newImageName;
     if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFilePath)) {
-        // Delete old image (if not placeholder and different from new)
-        if (
-            !empty($originalImageName) &&
-            $originalImageName !== 'placeholder_100.jpg' &&
-            $originalImageName !== $newImageName
-        ) {
-            $oldFilePath = $uploadDir . $originalImageName;
-            if (file_exists($oldFilePath)) {
-                unlink($oldFilePath);
-            }
+        if (!empty($originalImageName) && $originalImageName !== 'placeholder_100.jpg' && file_exists($uploadDir . $originalImageName)) {
+            unlink($uploadDir . $originalImageName);
         }
-
-        // Set new image name
         $imageName = $newImageName;
     } else {
         http_response_code(500);
@@ -89,7 +69,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-// Update contact
+// ✅ Update contact including typeID
 $sql = "UPDATE contacts SET 
             firstName = '$firstName',
             lastName = '$lastName',
@@ -97,7 +77,8 @@ $sql = "UPDATE contacts SET
             phone = '$phone',
             status = '$status',
             dob = '$dob',
-            imageName = '$imageName'
+            imageName = '$imageName',
+            typeID = $typeID
         WHERE contactID = $contactID
         LIMIT 1";
 

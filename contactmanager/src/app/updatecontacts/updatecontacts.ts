@@ -22,6 +22,7 @@ export class Updatecontacts implements OnInit {
     phone: '', status: '', dob: '', imageName: '', typeID: 0
   };
 
+  types: any[] = []; // 🔹 For populating contact types dropdown
   success = '';
   error = '';
   userName = '';
@@ -29,7 +30,6 @@ export class Updatecontacts implements OnInit {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   originalImageName: string = '';
-  types: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -46,6 +46,8 @@ export class Updatecontacts implements OnInit {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     this.maxDate = `${yyyy}-${mm}-${dd}`;
+
+    // ✅ Load contact data
     this.contactID = +this.route.snapshot.paramMap.get('id')!;
     this.contactService.get(this.contactID).subscribe({
       next: (data: Contact) => {
@@ -56,16 +58,15 @@ export class Updatecontacts implements OnInit {
       },
       error: () => this.error = 'Error loading contact.'
     });
-    
-    this.userName = localStorage.getItem('username') || 'Guest';
 
-    // ✅ Load types
+    // ✅ Load contact types for dropdown
     this.http.get<any[]>('http://localhost/contactmanagerangular/contactapi/types.php')
       .subscribe({
         next: (data) => this.types = data,
-        error: () => console.error('Failed to load contact types')
+        error: () => this.error = 'Error loading contact types.'
       });
 
+    this.userName = localStorage.getItem('username') || 'Guest';
   }
 
   onFileSelected(event: Event): void {
@@ -83,28 +84,26 @@ export class Updatecontacts implements OnInit {
     }
   }
 
-  cancel() {
-    this.router.navigate(['/contacts']);
-  }
-
-
   updateContact(form: NgForm) {
+    // ✅ Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(this.contact.emailAddress??'')) {
-        this.error = 'Please enter a valid email address.';
-        this.cdr.detectChanges();
-        return;
-      }
+    if (!emailRegex.test(this.contact.emailAddress ?? '')) {
+      this.error = 'Please enter a valid email address.';
+      this.cdr.detectChanges();
+      return;
+    }
 
+    // ✅ Phone validation
     const phoneRegex = /^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$/;
-      if (!phoneRegex.test(this.contact.phone??'')) {
-        this.error = 'Please enter a valid phone number.';
-        this.cdr.detectChanges();
-        return;
-      }
+    if (!phoneRegex.test(this.contact.phone ?? '')) {
+      this.error = 'Please enter a valid phone number.';
+      this.cdr.detectChanges();
+      return;
+    }
 
     if (form.invalid) return;
 
+    // ✅ Prepare FormData including typeID
     const formData = new FormData();
     formData.append('contactID', this.contactID.toString());
     formData.append('firstName', this.contact.firstName || '');
@@ -113,13 +112,15 @@ export class Updatecontacts implements OnInit {
     formData.append('phone', this.contact.phone || '');
     formData.append('status', this.contact.status || '');
     formData.append('dob', this.contact.dob || '');
+    formData.append('typeID', this.contact.typeID?.toString() || '0');
+    formData.append('originalImageName', this.originalImageName);
     formData.append('imageName', this.contact.imageName || '');
-    formData.append('oldImageName', this.originalImageName);
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     }
 
+    // ✅ Send request to edit.php
     this.http.post('http://localhost/contactmanagerangular/contactapi/edit.php', formData).subscribe({
       next: () => {
         this.success = 'Contact updated successfully';
@@ -127,13 +128,11 @@ export class Updatecontacts implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 409) {
-          const body = err.error;
-          this.error = body?.error || 'Duplicate entry detected';
-          this.cdr.detectChanges();
+          this.error = err.error?.error || 'Duplicate entry detected';
         } else {
           this.error = 'Update failed';
-          this.cdr.detectChanges();
         }
+        this.cdr.detectChanges();
       }
     });
   }
