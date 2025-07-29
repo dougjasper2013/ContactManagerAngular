@@ -1,4 +1,12 @@
-RewriteEngine On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+ 
+  # Handle OPTIONS requests and respond with 200 immediately (CORS preflight)
+  RewriteCond %{REQUEST_METHOD} OPTIONS
+  RewriteRule ^(.*)$ $1 [R=200,L]
+</IfModule>
+ 
+# Existing rewrite rules here...
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
  
@@ -7,7 +15,7 @@ RewriteCond %{REQUEST_URI} ^/uploads/ [NC]
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
  
-# Handle clean URLs for PHP files
+# Repeat your rewrite rules if necessary
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
  
