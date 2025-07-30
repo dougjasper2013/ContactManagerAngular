@@ -1,60 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
-  imports: [HttpClientModule, CommonModule, FormsModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-
 export class Register {
   userName = '';
   password = '';
+  confirmPassword = '';
   emailAddress = '';
   errorMessage = '';
   successMessage = '';
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
-  register() {
-    const trimmedUsername = this.userName.trim();
-    const trimmedPassword = this.password.trim();
-    const trimmedEmail = this.emailAddress.trim();
-  
-    // Basic front-end validation
-    if (!trimmedUsername || !trimmedPassword || !trimmedEmail) {
-      this.errorMessage = 'All fields are required.';
-      this.successMessage = '';
+  register(form: NgForm) {
+    if (this.password !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match.';
+      this.cdr.detectChanges();
       return;
     }
-  
-    // Call backend registration
-    this.auth.register({
-      userName: trimmedUsername,
-      password: trimmedPassword,
-      emailAddress: trimmedEmail
-    }).subscribe({
-      next: res => {
-        if (res.success) {
-          this.successMessage = 'Registration successful. Please log in.';
-          this.errorMessage = '';
-          setTimeout(() => this.router.navigate(['/login']), 1500);
-        } else {
-          this.errorMessage = res.message;
-          this.successMessage = '';
+
+    if (form.invalid) return;
+
+    this.auth.register({ userName: this.userName, password: this.password, emailAddress: this.emailAddress })
+      .subscribe({
+        next: res => {
+          this.successMessage = 'Registration successful! You can now log in.';
+          this.router.navigate(['/login']);
+        },
+        error: err => {
+          this.errorMessage = err.error?.message || 'Registration failed.';
+          this.cdr.detectChanges();
         }
-      },
-      error: () => {
-        this.errorMessage = 'Server error during registration.';
-        this.successMessage = '';
-      }
-    });
+      });
   }
 }
-
