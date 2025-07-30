@@ -27,26 +27,27 @@ export class Login {
           localStorage.setItem('username', this.userName);
           this.router.navigate(['/contacts']);
         } else {
-          // fallback for non-success responses without an HTTP error
           this.errorMessage = res.message || 'Login failed. Please try again.';
         }
         this.cdr.detectChanges();
       },
       error: err => {
-        // ✅ Graceful handling of lockout (403)
         if (err.status === 403) {
           this.errorMessage = err.error?.error || 
             'Too many failed attempts. Please wait 5 minutes before trying again.';
         } 
-        // ✅ Handle invalid credentials (401)
         else if (err.status === 401) {
-          this.errorMessage = 'Invalid username or password.';
+          const remaining = err.error?.remainingAttempts ?? null;
+          if (remaining !== null && remaining > 0) {
+            this.errorMessage = `Invalid username or password. You have ${remaining} attempt(s) remaining before lockout.`;
+          } else {
+            const lockoutDuration = err.error?.lockoutDuration ?? 5; // Default to 5 minutes
+            this.errorMessage = `Your account is locked for  ${lockoutDuration} minutes due to too many failed login attempts. Please try again later.`;
+          }
         } 
-        // ✅ Handle user not found (404)
         else if (err.status === 404) {
           this.errorMessage = 'User not found.';
         } 
-        // ✅ Other server errors
         else {
           this.errorMessage = 'Server error during login. Please try again.';
         }
